@@ -93,6 +93,8 @@ signRelease()
                 echo "Signing $f using $SERVER"
                 if [ "$SIGN_TOOL" = "ucl" ]; then
                   ucl sign-code --file "$f" -n ${SIGNING_CERTIFICATE} -t "${SERVER}" --hash SHA256
+                elif [ "$SIGN_TOOL" = "garasign" ]; then
+                  garasign sign --type authenticode --key ${SIGNING_CERTIFICATE} --hashAlg SHA256 --inputFile "$f" --tsaUrl "${SERVER}" --append --overwrite
                 else
                   "$signToolPath" sign /f "${SIGNING_CERTIFICATE}" /p "$SIGN_PASSWORD" /fd SHA256 /t "${SERVER}" "$f"
                 fi
@@ -178,10 +180,15 @@ if [ "${OPERATING_SYSTEM}" = "windows" ]; then
   mv "${signedArchive}" "${ARCHIVE}"
 fi
 
-if ([ "$OPERATING_SYSTEM" = "aix" ] || [ "$OPERATING_SYSTEM" = "linux" ] || [ "$OPERATING_SYSTEM" = "windows" ] || [ "$OPERATING_SYSTEM" = "mac" ]) && [ "$SIGN_TOOL" = "ucl" ]; then
-  # sign the tarball/zip
+if ([ "$OPERATING_SYSTEM" = "aix" ] || [ "$OPERATING_SYSTEM" = "linux" ] || [ "$OPERATING_SYSTEM" = "windows" ] || [ "$OPERATING_SYSTEM" = "mac" ] && [ "$SIGN_TOOL" = "ucl" ] || [ "$SIGN_TOOL" = "garasign" ]); then
   echo "Sign archive ${ARCHIVE}"
-  ucl sign --hash SHA256 -n ${SIGNING_CERTIFICATE} -i "${ARCHIVE}" -o "${ARCHIVE}.sig"
+  # sign the tarball/zip
+  if [ "$SIGN_TOOL" = "ucl" ]; then
+    ucl sign --hash SHA256 -n ${SIGNING_CERTIFICATE} -i "${ARCHIVE}" -o "${ARCHIVE}.sig"
+  elif [ "$SIGN_TOOL" = "garasign" ]; then
+    garasign sign --type cosign --key ${SIGNING_CERTIFICATE} --inputFile "${ARCHIVE}" --outputDirectory "workspace/target/" --overwrite --additionalFlags --b64=false
+    mv "${ARCHIVE}".cosign.sig "${ARCHIVE}".sig
+  fi
 else
   echo "Skipping code signing of archive ${ARCHIVE} as ${SIGN_TOOL} is unsupported on ${OPERATING_SYSTEM}"
 fi
