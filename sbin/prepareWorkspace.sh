@@ -34,10 +34,8 @@ source "$SCRIPT_DIR/common/constants.sh"
 
 ALSA_LIB_VERSION=${ALSA_LIB_VERSION:-1.1.6}
 ALSA_LIB_CHECKSUM=${ALSA_LIB_CHECKSUM:-5f2cd274b272cae0d0d111e8a9e363f08783329157e8dd68b3de0c096de6d724}
-FREEMARKER_LIB_CHECKSUM=${FREEMARKER_LIB_CHECKSUM:-8723ec9ffe006e8d376b6c7dbe7950db34ad1fa163aef4026e6477151a1a0deb}
-
+ALSA_LIB_GPGKEYID=${ALSA_LIB_GPGKEYID:-A6E59C91}
 FREETYPE_FONT_SHARED_OBJECT_FILENAME="libfreetype.so*"
-FREEMARKER_LIB_VERSION=${FREEMARKER_LIB_VERSION:-2.3.31}
 
 # Create a new clone or update the existing clone of the OpenJDK source repo
 # TODO refactor this for Single Responsibility Principle (SRP)
@@ -262,7 +260,7 @@ updateOpenj9Sources() {
   if [ "${BUILD_CONFIG[BUILD_VARIANT]}" == "${BUILD_VARIANT_OPENJ9}" ]; then
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/${BUILD_CONFIG[OPENJDK_SOURCE_DIR]}" || return
     # NOTE: fetched openssl will NOT be used in the RISC-V cross-compile situation
-    bash get_source.sh --openssl-version=OpenSSL_1_1_1t+CVEs1 --openssl-repo=https://github.com/ibmruntimes/openssl.git
+    bash get_source.sh --openssl-version=1.1.1u
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}"
   fi
 }
@@ -296,12 +294,34 @@ checkingAndDownloadingAlsa() {
 
   mkdir -p "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/installedalsa/" || exit
 
-  ALSA_BUILD_INFO="Unknown"
+  ALSA_BUILD_URL="Unknown"
   if [[ -n "$FOUND_ALSA" ]]; then
     echo "Skipping ALSA download"
   else
-    downloadFile "alsa-lib.tar.bz2" "https://ftp.osuosl.org/pub/blfs/conglomeration/alsa-lib/alsa-lib-${ALSA_LIB_VERSION}.tar.bz2" "${ALSA_LIB_CHECKSUM}"
-    ALSA_BUILD_INFO="https://ftp.osuosl.org/pub/blfs/conglomeration/alsa-lib/alsa-lib-${ALSA_LIB_VERSION}.tar.bz2"
+
+    ALSA_BUILD_URL="https://ftp.osuosl.org/pub/blfs/conglomeration/alsa-lib/alsa-lib-${ALSA_LIB_VERSION}.tar.bz2"
+    curl -o "alsa-lib.tar.bz2" "$ALSA_BUILD_URL"
+    curl -o "alsa-lib.tar.bz2.sig" "https://www.alsa-project.org/files/pub/lib/alsa-lib-${ALSA_LIB_VERSION}.tar.bz2.sig"
+
+    ## Add Special Rules For Alpine Linux as this doesn't work In docker
+
+    if echo "${BUILD_CONFIG[OS_FULL_VERSION]}" | grep -qi "alpine" ; then
+      # Use /tmp for alpine in preference to $HOME as Alpine fails gpg operation if PWD > 83 characters
+      # Alpine also cannot create ~/.gpg-temp within a docker context
+      export GNUPGHOME="/tmp/.gpg-temp.$$"
+    else
+      export GNUPGHOME="${WORKSPACE:-$PWD}/.gpg-temp"
+    fi
+
+    echo "GNUPGHOME=$GNUPGHOME"
+    mkdir -p "$GNUPGHOME" && chmod og-rwx "$GNUPGHOME"
+    gpg --keyserver keyserver.ubuntu.com --recv-keys "${ALSA_LIB_GPGKEYID}"
+    # Should we clear this directory up after checking?
+    # Would this risk removing anyone's existing dir with that name?
+    # Erring on the side of caution for now
+    gpg --keyserver keyserver.ubuntu.com --recv-keys "${ALSA_LIB_GPGKEYID}"
+    echo -e "5\ny\n" |  gpg --batch --command-fd 0 --expert --edit-key "${ALSA_LIB_GPGKEYID}" trust;
+    gpg --verify alsa-lib.tar.bz2.sig alsa-lib.tar.bz2 || exit 1
 
     if [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "aix" ]] || [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "sunos" ]]; then
       bzip2 -d alsa-lib.tar.bz2
@@ -314,7 +334,7 @@ checkingAndDownloadingAlsa() {
   fi
 
   # Record buildinfo version
-  echo "${ALSA_BUILD_INFO}" > "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[TARGET_DIR]}/metadata/dependency_version_alsa.txt"
+  echo "${ALSA_BUILD_URL}" > "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[TARGET_DIR]}/metadata/dependency_version_alsa.txt"
 }
 
 sha256File() {
@@ -374,41 +394,6 @@ checkFingerprint() {
     echo "expected \"$expectedFingerprint\" got \"$fingerprint\""
     exit 1
   fi
-}
-
-# Freemarker for OpenJ9
-checkingAndDownloadingFreemarker() {
-  echo "Checking for FREEMARKER"
-
-  cd "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/" || exit
-  FOUND_FREEMARKER=$(find "." -type d -name "freemarker-${FREEMARKER_LIB_VERSION}")
-
-  FREEMARKER_BUILD_INFO="Unknown"
-  if [[ -n "$FOUND_FREEMARKER" ]]; then
-    echo "Skipping FREEMARKER download"
-  else
-
-    # www.mirrorservice.org unavailable - issue #1867
-    #wget -nc --no-check-certificate "https://www.mirrorservice.org/sites/ftp.apache.org/freemarker/engine/${FREEMARKER_LIB_VERSION}/binaries/apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz"
-
-    wget "https://www.apache.org/dist/freemarker/engine/${FREEMARKER_LIB_VERSION}/binaries/apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz" ||
-      curl -L -o "apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz" "https://www.apache.org/dist/freemarker/engine/${FREEMARKER_LIB_VERSION}/binaries/apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz"
-
-    # Allow fallback to curl since wget fails cert check on macos - issue #1194
-    wget "https://www.apache.org/dist/freemarker/engine/${FREEMARKER_LIB_VERSION}/binaries/apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz.asc" ||
-      curl -L -o "apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz.asc" "https://www.apache.org/dist/freemarker/engine/${FREEMARKER_LIB_VERSION}/binaries/apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz.asc"
-
-    FREEMARKER_BUILD_INFO="https://www.apache.org/dist/freemarker/engine/${FREEMARKER_LIB_VERSION}/binaries/apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz"
-
-    checkFingerprint "apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz.asc" "apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz" "freemarker" "13AC 2213 964A BE1D 1C14 7C0E 1939 A252 0BAB 1D90" "${FREEMARKER_LIB_CHECKSUM}"
-
-    mkdir -p "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/freemarker-${FREEMARKER_LIB_VERSION}/" || exit
-    tar -xzf "apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz" --strip-components=1 -C "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/freemarker-${FREEMARKER_LIB_VERSION}/"
-    rm "apache-freemarker-${FREEMARKER_LIB_VERSION}-bin.tar.gz"
-  fi
-
-  # Record buildinfo version
-  echo "${FREEMARKER_BUILD_INFO}" > "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[TARGET_DIR]}/metadata/dependency_version_freemarker.txt"
 }
 
 # Utility function
@@ -471,7 +456,7 @@ checkingAndDownloadingFreeType() {
       cd .. || exit
       ;;
     esac
-  
+
     # Fetch the sha for the commit we just cloned
     cd freetype || exit
     FREETYPE_SHA=$(git rev-parse HEAD) || exit
@@ -556,7 +541,7 @@ prepareMozillaCacerts() {
     fi
 }
 
-# Download all of the dependencies for OpenJDK (Alsa, FreeType, FreeMarker etc.)
+# Download all of the dependencies for OpenJDK (Alsa, FreeType etc.)
 downloadingRequiredDependencies() {
   if [[ "${BUILD_CONFIG[CLEAN_LIBS]}" == "true" ]]; then
     rm -rf "${BUILD_CONFIG[WORKSPACE_DIR]}/libs/freetype" || true
@@ -568,21 +553,11 @@ downloadingRequiredDependencies() {
   mkdir -p "${BUILD_CONFIG[WORKSPACE_DIR]}/libs/" || exit
   cd "${BUILD_CONFIG[WORKSPACE_DIR]}/libs/" || exit
 
-  if [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "darwin" ]]; then
-    echo "macOS, Windows or Windows-like environment detected, skipping download of dependency Alsa."
+  if [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "" ]] || [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "darwin" ]] ||  [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "aix" ]] ||  [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "sunos" ]] ; then
+    echo "Non-Linux-based environment detected, skipping download of dependency Alsa."
   else
-    echo "Checking and downloading Alsa dependency"
+    echo "Checking and downloading Alsa dependency because OSTYPE=\"${OSTYPE}\""
     checkingAndDownloadingAlsa
-  fi
-
-  if [[ "${BUILD_CONFIG[BUILD_VARIANT]}" == "${BUILD_VARIANT_OPENJ9}" ]]; then
-    if [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "msys" ]]; then
-      echo "Windows or Windows-like environment detected, skipping download of dependency Freemarker."
-    else
-      echo "Checking and downloading Freemarker dependency"
-      echo "Temp skip freemarker download"
-      #checkingAndDownloadingFreemarker
-    fi
   fi
 
   if [[ "${BUILD_CONFIG[FREETYPE]}" == "true" ]]; then

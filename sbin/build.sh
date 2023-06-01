@@ -120,8 +120,8 @@ configureReproducibleBuildParameter() {
           # Use supplied date
           addConfigureArg "--with-hotspot-build-time=" "'${BUILD_CONFIG[BUILD_TIMESTAMP]}'"
       fi
-      # Ensure reproducible binary with a unique build user identifier
-      addConfigureArg "--with-build-user=" "${BUILD_CONFIG[BUILD_VARIANT]}"
+      # Ensure reproducible and comparable binary with a unique build user identifier
+      addConfigureArg "--with-build-user=" "admin"
   fi
 }
 
@@ -392,7 +392,12 @@ configureVersionStringParameter() {
       addConfigureArg "--with-version-opt=" "${dateSuffix}"
       addConfigureArg "--with-version-pre=" "beta"
     else
-      addConfigureArg "--without-version-opt" ""
+      # "LTS" builds from jdk-21 will use "LTS" version opt
+      if isFromJdk21LTS; then
+          addConfigureArg "--with-version-opt=" "LTS"
+      else
+          addConfigureArg "--without-version-opt" ""
+      fi
       addConfigureArg "--without-version-pre" ""
     fi
 
@@ -433,11 +438,6 @@ configureVersionStringParameter() {
 buildingTheRestOfTheConfigParameters() {
   if [ -n "$(which ccache)" ]; then
     addConfigureArg "--enable-ccache" ""
-  fi
-
-  # Point-in-time dependency for openj9 only
-  if [[ "${BUILD_CONFIG[BUILD_VARIANT]}" == "${BUILD_VARIANT_OPENJ9}" ]]; then
-    addConfigureArg "--with-freemarker-jar=" "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/freemarker-${FREEMARKER_LIB_VERSION}/freemarker.jar"
   fi
 
   if [ "${BUILD_CONFIG[OPENJDK_CORE_VERSION]}" == "${JDK8_CORE_VERSION}" ]; then
