@@ -219,18 +219,9 @@ then
   # OpenJ9 fetches the latest OpenSSL in their get_source.sh
   export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-openssl=fetched"
 
-  if [ "${ARCHITECTURE}" == "ppc64le" ]
+  if [ "${ARCHITECTURE}" == "ppc64le" ] || [ "${ARCHITECTURE}" == "x64" ]
   then
     CUDA_VERSION=9.0
-    CUDA_HOME=/usr/local/cuda-$CUDA_VERSION
-    if [ -f $CUDA_HOME/include/cuda.h ]
-    then
-      export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-cuda --with-cuda=$CUDA_HOME"
-    fi
-  fi
-  if [ "${ARCHITECTURE}" == "x64" ]
-  then
-    CUDA_VERSION=11.0
     CUDA_HOME=/usr/local/cuda-$CUDA_VERSION
     if [ -f $CUDA_HOME/include/cuda.h ]
     then
