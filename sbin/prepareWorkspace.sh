@@ -279,7 +279,12 @@ updateOpenj9Sources() {
   if [ "${BUILD_CONFIG[BUILD_VARIANT]}" == "${BUILD_VARIANT_OPENJ9}" ]; then
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/${BUILD_CONFIG[OPENJDK_SOURCE_DIR]}" || return
     # NOTE: fetched openssl will NOT be used in the RISC-V cross-compile situation
-    bash get_source.sh --openssl-version=1.1.1v
+    if [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" = *"cygwin"* ]] || [[ "${BUILD_CONFIG[OS_KERNEL_NAME]}" == "darwin" ]]; then
+      bash get_source.sh --openssl-version=3.0.10
+    else
+      # Continue using 1.1.1 until all platforms can build 3.0.10
+      bash get_source.sh --openssl-version=1.1.1v
+    fi
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}"
   fi
 }
