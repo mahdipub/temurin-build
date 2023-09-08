@@ -220,7 +220,7 @@ then
 
   if [ "${ARCHITECTURE}" == "ppc64le" ] || [ "${ARCHITECTURE}" == "x64" ]
   then
-    CUDA_VERSION=9.0
+    CUDA_VERSION=12.2.0
     CUDA_HOME=/usr/local/cuda-$CUDA_VERSION
     if [ -f $CUDA_HOME/include/cuda.h ]
     then
