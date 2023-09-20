@@ -163,6 +163,7 @@ then
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-openssl=fetched --enable-openssl-bundling"
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --disable-ccache"
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-msvcp-dll=/cygdrive/c/Windows/System32/msvcp140.dll --with-msvcr-dll=/cygdrive/c/Windows/System32/vcruntime140.dll"
+    export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-vcruntime-1-dll=/cygdrive/c/Windows/System32/vcruntime140_1.dll"
 
     if [ "${JAVA_TO_BUILD}" == "${JDK8_VERSION}" ]
     then
@@ -181,12 +182,10 @@ then
     then
       TOOLCHAIN_VERSION="2019"
       export BUILD_ARGS="${BUILD_ARGS} --skip-freetype"
-      export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-vcruntime-1-dll=/cygdrive/c/Windows/System32/vcruntime140_1.dll"
     elif [ "$JAVA_FEATURE_VERSION" -ge 19 ]
     then
       TOOLCHAIN_VERSION="2022"
       export BUILD_ARGS="${BUILD_ARGS} --skip-freetype"
-      export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-vcruntime-1-dll=/cygdrive/c/Windows/System32/vcruntime140_1.dll"
     fi
 
     CUDA_VERSION=9.0
