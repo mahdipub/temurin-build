@@ -116,13 +116,13 @@ then
   then
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-openssl=fetched --enable-openssl-bundling"
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-msvcp-dll=/cygdrive/c/Windows/SysWOW64/msvcp140.dll --with-msvcr-dll=/cygdrive/c/Windows/SysWOW64/vcruntime140.dll"
+    TOOLCHAIN_VERSION="2022"
     if [ "${JAVA_TO_BUILD}" == "${JDK8_VERSION}" ]
     then
       export BUILD_ARGS="${BUILD_ARGS} --skip-freetype"
       # https://github.com/adoptium/temurin-build/issues/243
       export INCLUDE="C:\Program Files\Debugging Tools for Windows (x64)\sdk\inc;$INCLUDE"
       export PATH="/c/cygwin64/bin:/usr/bin:$PATH"
-      TOOLCHAIN_VERSION="2019"
     elif [ "${JAVA_TO_BUILD}" == "${JDK11_VERSION}" ]
     then
       export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-freemarker-jar=/cygdrive/c/openjdk/freemarker.jar"
@@ -164,28 +164,13 @@ then
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --disable-ccache"
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-msvcp-dll=/cygdrive/c/Windows/System32/msvcp140.dll --with-msvcr-dll=/cygdrive/c/Windows/System32/vcruntime140.dll"
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-vcruntime-1-dll=/cygdrive/c/Windows/System32/vcruntime140_1.dll"
+    TOOLCHAIN_VERSION="2022"
+    export BUILD_ARGS="${BUILD_ARGS} --skip-freetype"
 
     if [ "${JAVA_TO_BUILD}" == "${JDK8_VERSION}" ]
     then
       export INCLUDE="C:\Program Files\Debugging Tools for Windows (x64)\sdk\inc;$INCLUDE"
       export PATH="$PATH:/c/cygwin64/bin"
-      export BUILD_ARGS="${BUILD_ARGS} --skip-freetype"
-      TOOLCHAIN_VERSION="2019"
-    elif [ "${JAVA_TO_BUILD}" == "${JDK9_VERSION}" ]
-    then
-      TOOLCHAIN_VERSION="2013"
-      export BUILD_ARGS="${BUILD_ARGS} --freetype-version 2.5.3"
-    elif [ "${JAVA_TO_BUILD}" == "${JDK10_VERSION}" ]
-    then
-      export BUILD_ARGS="${BUILD_ARGS} --freetype-version 2.5.3"
-    elif [ "$JAVA_FEATURE_VERSION" -lt 19 ]
-    then
-      TOOLCHAIN_VERSION="2019"
-      export BUILD_ARGS="${BUILD_ARGS} --skip-freetype"
-    elif [ "$JAVA_FEATURE_VERSION" -ge 19 ]
-    then
-      TOOLCHAIN_VERSION="2022"
-      export BUILD_ARGS="${BUILD_ARGS} --skip-freetype"
     fi
 
     CUDA_VERSION=9.0
