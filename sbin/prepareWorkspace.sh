@@ -190,11 +190,19 @@ checkoutRequiredCodeToBuild() {
         # shellcheck disable=SC2086
         git fetch --all ${BUILD_CONFIG[SHALLOW_CLONE_OPTION]} || rc=$?
         if [ $rc -eq 0 ]; then
-          git reset --hard "origin/${BUILD_CONFIG[BRANCH]}" || rc=$?
+          # It's not sufficient to checkout the commit at the head of the
+          # requested branch, the name of that branch may also be significant,
+          # so create one with the right name and check it out.
+          git checkout -B "${BUILD_CONFIG[BRANCH]}" "origin/${BUILD_CONFIG[BRANCH]}" || rc=$?
           if [ $rc -eq 0 ]; then
-            echo "Checked out origin/${BUILD_CONFIG[BRANCH]}"
+            git reset --hard "origin/${BUILD_CONFIG[BRANCH]}" || rc=$?
+            if [ $rc -eq 0 ]; then
+              echo "Checked out origin/${BUILD_CONFIG[BRANCH]}"
+            else
+              echo "Failed cmd: git reset --hard \"origin/${BUILD_CONFIG[BRANCH]}\""
+            fi
           else
-            echo "Failed cmd: git reset --hard \"origin/${BUILD_CONFIG[BRANCH]}\""
+            echo "Failed cmd: git checkout -B \"${BUILD_CONFIG[BRANCH]}\" \"origin/${BUILD_CONFIG[BRANCH]}\""
           fi
         else
           echo "Failed cmd: git fetch --all ${BUILD_CONFIG[SHALLOW_CLONE_OPTION]}"
