@@ -330,6 +330,10 @@ if [ "${VARIANT}" == "${BUILD_VARIANT_DRAGONWELL}" ] && [ "$JAVA_FEATURE_VERSION
   export CXX=/usr/local/gcc9/bin/g++-9.3
   # Enable GCC 10 for Java 17+ for repeatable builds, but not for our supported releases
   # Ref https://github.com/adoptium/temurin-build/issues/2787
+elif [ "${ARCHITECTURE}" == "riscv64" ] && [ -r /usr/bin/gcc-10 ]; then
+  # Enable GCC 10 for RISC-V, given the rapid evolution of RISC-V, the newer the GCC toolchain, the better
+  [ -r /usr/bin/gcc-10 ] && export  CC=/usr/bin/gcc-10
+  [ -r /usr/bin/g++-10 ] && export CXX=/usr/bin/g++-10
 elif [ "$JAVA_FEATURE_VERSION" -ge 19 ] && [ -r /usr/local/gcc11/bin/gcc-11.2 ] && [ "${ARCHITECTURE}" != "aarch64" ] || [ "${VARIANT}" != "${BUILD_VARIANT_OPENJ9}" ] ; then
   # For OpenJ9 Java 19 or later, use gcc 11.2 except on aarch64 Linux, due to https://github.com/eclipse-openj9/openj9/issues/15390
   export PATH=/usr/local/gcc11/bin:$PATH
