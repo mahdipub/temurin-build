@@ -161,6 +161,15 @@ then
   then
     export HAS_AUTOCONF=1
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-openssl=fetched --enable-openssl-bundling"
+
+    if [ "$JAVA_FEATURE_VERSION" -eq 17 ]
+    then
+      # Add extra flag if OpenJCEPlus is to be bundled
+      if [[ $BUILD_ARGS == *"--bundle-openjceplus"* ]]; then
+        export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-openjceplus"
+      fi
+    fi
+
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --disable-ccache"
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-msvcp-dll=/cygdrive/c/Windows/System32/msvcp140.dll --with-msvcr-dll=/cygdrive/c/Windows/System32/vcruntime140.dll"
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-vcruntime-1-dll=/cygdrive/c/Windows/System32/vcruntime140_1.dll"

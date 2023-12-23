@@ -223,6 +223,9 @@ function parseConfigurationArguments() {
         "--build-number"  | "-B" )
         BUILD_CONFIG[OPENJDK_BUILD_NUMBER]="$1"; shift;;
 
+        " --bundle-openjceplus" )
+        BUILD_CONFIG[BUNDLE_OPENJCEPLUS]=true;;
+
         "--configure-args"  | "-C" )
         BUILD_CONFIG[USER_SUPPLIED_CONFIGURE_ARGS]="$1"; shift;;
 
