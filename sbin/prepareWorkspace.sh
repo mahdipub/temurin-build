@@ -288,37 +288,35 @@ updateOpenj9Sources() {
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/${BUILD_CONFIG[OPENJDK_SOURCE_DIR]}" || return
 OPENJCEPLUS_FLAGS=""
 GSKIT_FLAGS=""
-GSKIT_CREDENTIALS=""
     if [ "$JAVA_FEATURE_VERSION" -eq 17 ]
     then
       if [ "${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]}" == "true" ]; then
         # Set the flags to get the OpenJCEPlus source code
-        OPENJDKPLUS_BRANCH="semeru-main"
+        OPENJCEPLUS_BRANCH="semeru-main"
         # Set the flags to get the appropriate GSKit binaries
         GSKIT_FOLDER="https://na.artifactory.swg-devops.com/artifactory/sec-gskit-javasec-generic-local/gskit8/20230802_8.9.5"
         if [ "$TARGET_OS" = "linux"  ]; then
           if [ "$ARCHITECTURE" = "x64"  ]; then
-            OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJDKPLUS_BRANCH}"
+            OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJCEPLUS_BRANCH}"
             GSKIT_FLAGS="-gskit-bin=${GSKIT_FOLDER}/linux64_x86/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_FOLDER}/linux64_x86/jgsk_crypto_sdk.tar"
           elif [ "$ARCHITECTURE" = "ppc64le"  ]; then
-            OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJDKPLUS_BRANCH}"
+            OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJCEPLUS_BRANCH}"
             GSKIT_FLAGS="-gskit-bin=${GSKIT_FOLDER}/linux64_ppcle/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_FOLDER}/linux64_ppcle/jgsk_crypto_sdk.tar"
           fi
         fi
         if [ "$TARGET_OS" = "aix"  ]; then
-          OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJDKPLUS_BRANCH}"
+          OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJCEPLUS_BRANCH}"
           GSKIT_FLAGS="-gskit-bin=${GSKIT_FOLDER}/aix64_ppc/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_FOLDER}/aix64_ppc/jgsk_crypto_sdk.tar"
         fi
         if [ "$TARGET_OS" = "windows"  ]; then
-          OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJDKPLUS_BRANCH}"
+          OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJCEPLUS_BRANCH}"
           GSKIT_FLAGS="-gskit-bin=${GSKIT_FOLDER}/win64_x86/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_FOLDER}/win64_x86/jgsk_crypto_sdk.tar"
         fi
-        GSKIT_CREDENTIALS="\$GSKIT_USERNAME:\$GSKIT_PASSWORD"
       fi
     fi
     
     # NOTE: fetched openssl will NOT be used in the RISC-V cross-compile situation
-    bash get_source.sh --openssl-version=openssl-3.0.12+CVEs1 --openssl-repo=https://github.com/ibmruntimes/openssl.git "${OPENJCEPLUS_FLAGS} ${GSKIT_FLAGS} ${GSKIT_CREDENTIALS}"
+    bash get_source.sh --openssl-version=openssl-3.0.12+CVEs1 --openssl-repo=https://github.com/ibmruntimes/openssl.git "${OPENJCEPLUS_FLAGS} ${GSKIT_FLAGS}"
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}"
   fi
 }
