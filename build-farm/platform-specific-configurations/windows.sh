@@ -162,8 +162,7 @@ then
     export HAS_AUTOCONF=1
     export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-openssl=fetched --enable-openssl-bundling"
 
-    if [ "$JAVA_FEATURE_VERSION" -eq 17 ]
-    then
+    if [ "$JAVA_FEATURE_VERSION" -eq 17 ]; then
       # Add extra flag if OpenJCEPlus is to be bundled
       if [[ $BUILD_ARGS == *"--bundle-openjceplus"* ]]; then
         export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-openjceplus"
