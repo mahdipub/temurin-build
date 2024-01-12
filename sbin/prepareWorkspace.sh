@@ -286,8 +286,8 @@ updateOpenj9Sources() {
   # Building OpenJDK with OpenJ9 must run get_source.sh to clone openj9 and openj9-omr repositories
   if [ "${BUILD_CONFIG[BUILD_VARIANT]}" == "${BUILD_VARIANT_OPENJ9}" ]; then
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}/${BUILD_CONFIG[WORKING_DIR]}/${BUILD_CONFIG[OPENJDK_SOURCE_DIR]}" || return
-OPENJCEPLUS_FLAGS=""
-GSKIT_FLAGS=""
+    OPENJCEPLUS_FLAGS=""
+    GSKIT_FLAGS=""
     if [ "$JAVA_FEATURE_VERSION" -eq 17 ]
     then
       if [ "${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]}" == "true" ]; then
@@ -316,6 +316,7 @@ GSKIT_FLAGS=""
     fi
     
     # NOTE: fetched openssl will NOT be used in the RISC-V cross-compile situation
+    set -x
     bash get_source.sh --openssl-version=openssl-3.0.12+CVEs1 --openssl-repo=https://github.com/ibmruntimes/openssl.git "${OPENJCEPLUS_FLAGS} ${GSKIT_FLAGS}"
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}"
   fi
