@@ -301,22 +301,22 @@ updateOpenj9Sources() {
           if [ "$ARCHITECTURE" = "x64"  ]; then
             OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJCEPLUS_BRANCH}"
             GSKIT_FLAGS="-gskit-bin=${GSKIT_FOLDER}/linux64_x86/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_FOLDER}/linux64_x86/jgsk_crypto_sdk.tar"
-            GSKIT_CREDENTIALS="-gskit-credential=\$GSKIT_USERNAME:\$GSKIT_PASSWORD"
+            GSKIT_CREDENTIALS="-gskit-credential=$GSKIT_USERNAME:$GSKIT_PASSWORD"
           elif [ "$ARCHITECTURE" = "ppc64le"  ]; then
             OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJCEPLUS_BRANCH}"
             GSKIT_FLAGS="-gskit-bin=${GSKIT_FOLDER}/linux64_ppcle/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_FOLDER}/linux64_ppcle/jgsk_crypto_sdk.tar"
-            GSKIT_CREDENTIALS="-gskit-credential=\$GSKIT_USERNAME:\$GSKIT_PASSWORD"
+            GSKIT_CREDENTIALS="-gskit-credential=$GSKIT_USERNAME:$GSKIT_PASSWORD"
           fi
         fi
         if [ "$TARGET_OS" = "aix"  ]; then
           OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJCEPLUS_BRANCH}"
           GSKIT_FLAGS="-gskit-bin=${GSKIT_FOLDER}/aix64_ppc/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_FOLDER}/aix64_ppc/jgsk_crypto_sdk.tar"
-          GSKIT_CREDENTIALS="-gskit-credential=\$GSKIT_USERNAME:\$GSKIT_PASSWORD"
+          GSKIT_CREDENTIALS="-gskit-credential=$GSKIT_USERNAME:$GSKIT_PASSWORD"
         fi
         if [ "$TARGET_OS" = "windows"  ]; then
           OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJCEPLUS_BRANCH}"
           GSKIT_FLAGS="-gskit-bin=${GSKIT_FOLDER}/win64_x86/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_FOLDER}/win64_x86/jgsk_crypto_sdk.tar"
-          GSKIT_CREDENTIALS="-gskit-credential=\$GSKIT_USERNAME:\$GSKIT_PASSWORD"
+          GSKIT_CREDENTIALS="-gskit-credential=$GSKIT_USERNAME:$GSKIT_PASSWORD"
         fi
       fi
     fi
