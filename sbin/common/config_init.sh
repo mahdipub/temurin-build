@@ -41,6 +41,7 @@ BUILD_FULL_NAME
 BUILD_REPRODUCIBLE_DATE
 BUILD_TIMESTAMP
 BUILD_VARIANT
+BUNDLE_OPENJCEPLUS
 CERTIFICATE
 CLEAN_DOCKER_BUILD
 CLEAN_GIT_REPO
@@ -222,6 +223,9 @@ function parseConfigurationArguments() {
 
         "--build-number"  | "-B" )
         BUILD_CONFIG[OPENJDK_BUILD_NUMBER]="$1"; shift;;
+
+        "--bundle-openjceplus" )
+        BUILD_CONFIG[BUNDLE_OPENJCEPLUS]=true;;
 
         "--configure-args"  | "-C" )
         BUILD_CONFIG[USER_SUPPLIED_CONFIGURE_ARGS]="$1"; shift;;
@@ -605,6 +609,9 @@ function configDefaults() {
   # Used in 'release' file for jdk8u
   BUILD_CONFIG[VENDOR]=${BUILD_CONFIG[VENDOR]:-"Undefined Vendor"}
   BUILD_CONFIG[VENDOR_VERSION]=${BUILD_CONFIG[VENDOR_VERSION]:-""}
+
+  # By default do not bundle OpenJCEPlus
+  BUILD_CONFIG[BUNDLE_OPENJCEPLUS]=${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]:-false}
 }
 
 # Declare the map of build configuration that we're going to use
