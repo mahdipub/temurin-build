@@ -251,14 +251,12 @@ then
     then
       export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-cuda --with-cuda=$CUDA_HOME"
     fi
+  fi
 
-    if [ "$JAVA_FEATURE_VERSION" -eq 17 ]; then
-      if [ "$ARCHITECTURE" = "x64"  ] || [ "$ARCHITECTURE" = "ppc64le"  ]; then
-        # Add extra flag if OpenJCEPlus is to be bundled
-        if [[ $BUILD_ARGS == *"--bundle-openjceplus"* ]]; then
-          export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-openjceplus"
-        fi
-      fi
+  if [ "$ARCHITECTURE" = "ppc64le"  ] || [ "${ARCHITECTURE}" == "s390x" ] || [ "$ARCHITECTURE" = "x64"  ]; then
+    # Add extra flag if OpenJCEPlus is to be bundled
+    if [[ $BUILD_ARGS == *"--bundle-openjceplus"* ]]; then
+      export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-openjceplus"
     fi
   fi
 fi
