@@ -136,7 +136,7 @@ else
   export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} DF=/usr/sysv/bin/df"
 fi
 
-if [ "$JAVA_FEATURE_VERSION" -ge 11 ]; then
+if [ "$JAVA_FEATURE_VERSION" -ge 11 ] || [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ]; then
   export LANG=C
   export PATH=/opt/cmake-3.17.1/bin/:/opt/freeware/bin:$JAVA_HOME/bin:/usr/local/bin:/opt/IBM/xlC/16.1.0/bin:/opt/IBM/xlc/16.1.0/bin:$PATH
   export CC=xlclang
