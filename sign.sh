@@ -71,7 +71,10 @@ signRelease()
       signToolPath=${signToolPath:-"/cygdrive/c/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x64/signtool.exe"}
 
       # Sign .exe files
-      FILES=$(find . -type f -name '*.exe' -o -name '*.dll')
+      # The ./bin/C directory contains FIPS binaries that are signed by other means.
+      # Skip all files within this directory as signing them would cause failures when
+      # the libraries attempt to self verify themselves.
+      FILES=$(find . -type f -name '*.exe' -o -name '*.dll' -not -path './bin/C/*')
       if [ "$FILES" == "" ]; then
         echo "No files to sign"
       else
