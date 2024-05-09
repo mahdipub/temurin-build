@@ -79,6 +79,7 @@ MAKE_ARGS_FOR_ANY_PLATFORM
 MAKE_EXPLODED
 MAKE_COMMAND_NAME
 NUM_PROCESSORS
+OPENJCEPLUS_BRANCH
 OPENJDK_BUILD_NUMBER
 OPENJDK_CORE_VERSION
 OPENJDK_FEATURE_NUMBER
@@ -231,6 +232,9 @@ function parseConfigurationArguments() {
 
         "--bundle-openjceplus" )
         BUILD_CONFIG[BUNDLE_OPENJCEPLUS]=true;;
+
+        "--openjceplus-branch" )
+        BUILD_CONFIG[OPENJCEPLUS_BRANCH]="$1"; shift;;
 
         "--configure-args"  | "-C" )
         BUILD_CONFIG[USER_SUPPLIED_CONFIGURE_ARGS]="$1"; shift;;
@@ -665,6 +669,7 @@ function configDefaults() {
 
   # By default do not bundle OpenJCEPlus
   BUILD_CONFIG[BUNDLE_OPENJCEPLUS]=${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]:-false}
+  BUILD_CONFIG[OPENJCEPLUS_BRANCH]="main"
 }
 
 # Declare the map of build configuration that we're going to use
