@@ -375,8 +375,7 @@ updateOpenj9Sources() {
 
       if [ "$SUPPORTED_PLATFORM" == "true" ]; then
         # Set the flags to get the OpenJCEPlus source code
-        OPENJCEPLUS_BRANCH="semeru-java$JAVA_FEATURE_VERSION"
-        OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${OPENJCEPLUS_BRANCH}"
+        OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}"
       fi
       
       
