@@ -404,7 +404,7 @@ updateOpenj9Sources() {
     fi
     
     # NOTE: fetched openssl will NOT be used in the RISC-V cross-compile situation
-    bash get_source.sh --openssl-version=openssl-3.0.13+CVEs1 --openssl-repo=https://github.com/ibmruntimes/openssl.git ${OPENJCEPLUS_FLAGS} ${GSKIT_FLAGS} ${GSKIT_CREDENTIALS}
+    bash get_source.sh --openssl-version=openssl-3.0.13+CVEs2 --openssl-repo=https://github.com/ibmruntimes/openssl.git ${OPENJCEPLUS_FLAGS} ${GSKIT_FLAGS} ${GSKIT_CREDENTIALS}
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}"
   fi
 }
