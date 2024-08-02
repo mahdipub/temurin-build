@@ -102,7 +102,7 @@ if [ "${JDK_BOOT_VERSION}" == "7" ]; then
   JDK_BOOT_VERSION="8"
 fi
 # xmac can't run jdk22 on mac10. Build 23 with 21 for now
-if [[ "${JDK_BOOT_VERSION}" == "22" ] && [ "${ARCHITECTURE}" == "x64" ]]; then
+if [[ "${JDK_BOOT_VERSION}" == "22" ]] && [[ "${ARCHITECTURE}" == "x64" ]]; then
   echo "jdk22 boot JDK can't run on mac10 compile machines"
   JDK_BOOT_VERSION="21"
 fi
