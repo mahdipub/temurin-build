@@ -2225,6 +2225,8 @@ addInfoToReleaseFile() {
   addFullVersion
   echo "ADDING SEM VER"
   addSemVer
+  echo "ADDING VENDOR VER"
+  addVendorVer
   echo "ADDING BUILD OS"
   addBuildOS
   echo "ADDING VARIANT"
@@ -2345,6 +2347,10 @@ addSemVer() { # Pulls the semantic version from the tag associated with the open
   fi
   # shellcheck disable=SC2086
   echo -e SEMANTIC_VERSION=\"$SEM_VER\" >> release
+}
+
+addVendorVer() {
+  echo -e VENDOR_VERSION=\"${BUILD_CONFIG[VENDOR_VERSION]}\" >> release
 }
 
 # Disable shellcheck in here as it causes issues with ls on mac
