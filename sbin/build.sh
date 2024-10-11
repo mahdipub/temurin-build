@@ -2250,6 +2250,9 @@ addImplementor() {
   if [ "${BUILD_CONFIG[OPENJDK_CORE_VERSION]}" == "${JDK8_CORE_VERSION}" ]; then
     # shellcheck disable=SC2086
     echo -e IMPLEMENTOR=\"${BUILD_CONFIG[VENDOR]}\" >>release
+    if [ -n "${BUILD_CONFIG[VENDOR_VERSION]}" ]; then
+      echo -e IMPLEMENTOR_VERSION=\"${BUILD_CONFIG[VENDOR_VERSION]}\" >>release
+    fi
   fi
 }
 
