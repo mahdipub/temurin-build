@@ -210,7 +210,7 @@ fi
 if [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ]
 then
   # OpenJ9 fetches the latest OpenSSL in their get_source.sh
-  export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-openssl=fetched"
+  export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --with-openssl=fetched --enable-openssl-bundling"
 
   if [ "${ARCHITECTURE}" == "ppc64le" ] || [ "${ARCHITECTURE}" == "x64" ]
   then
