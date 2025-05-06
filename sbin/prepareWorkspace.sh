@@ -379,10 +379,10 @@ updateOpenj9Sources() {
     if [ "${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]}" == "true" ]; then
       SUPPORTED_PLATFORM=false
       if [ "$TARGET_OS" = "linux"  ]; then
-        if [ "$ARCHITECTURE" = "x64" ] || [ "$ARCHITECTURE" = "ppc64le" ] || [ "$ARCHITECTURE" = "s390x"  ]; then
+        if [ "$ARCHITECTURE" = "x64" ] || [ "$ARCHITECTURE" = "ppc64le" ] || [ "$ARCHITECTURE" = "s390x"  ] || [ "$ARCHITECTURE" = "aarch64"  ]; then
           SUPPORTED_PLATFORM=true
         fi
-      elif [ "$TARGET_OS" = "aix" ] || [ "$TARGET_OS" = "windows" ]; then
+      elif [ "$TARGET_OS" = "aix" ] || [ "$TARGET_OS" = "windows" ]|| [ "$TARGET_OS" = "mac" ]; then
           SUPPORTED_PLATFORM=true
       fi
 
@@ -404,6 +404,8 @@ updateOpenj9Sources() {
           GSKIT_PLATFORM="linux64_ppcle"
         elif [ "$ARCHITECTURE" = "s390x"  ]; then
           GSKIT_PLATFORM="linux64_s390"
+        elif [ "$ARCHITECTURE" = "aarch64"  ]; then
+          GSKIT_PLATFORM="linux64_arm"
         fi
       fi
       if [ "$TARGET_OS" = "aix"  ]; then
@@ -411,6 +413,13 @@ updateOpenj9Sources() {
       fi
       if [ "$TARGET_OS" = "windows"  ]; then
         GSKIT_PLATFORM="win64_x86"
+      fi
+      if [ "$TARGET_OS" = "mac"  ]; then
+        if [ "$ARCHITECTURE" = "x64"  ]; then
+          GSKIT_PLATFORM="osx64_x86"
+        elif [ "$ARCHITECTURE" = "aarch64"  ]; then
+          GSKIT_PLATFORM="osx64_arm"
+        fi
       fi
 
       if [ "$SUPPORTED_PLATFORM" == "true" ]; then

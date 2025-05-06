@@ -166,6 +166,11 @@ if [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ]; then
     export TAR=gtar
     export SDKPATH=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
   fi
+
+  # Add extra flag if OpenJCEPlus is to be bundled
+  if [[ $BUILD_ARGS == *"--bundle-openjceplus"* ]]; then
+    export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-openjceplus"
+  fi
 fi
 
 if [ ! "${c_flags_bucket}" = "" ]; then
