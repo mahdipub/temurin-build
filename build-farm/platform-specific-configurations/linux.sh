@@ -221,11 +221,9 @@ then
     fi
   fi
 
-  if [ "$ARCHITECTURE" = "aarch64"  ] || [ "$ARCHITECTURE" = "ppc64le"  ] || [ "${ARCHITECTURE}" == "s390x" ] || [ "$ARCHITECTURE" = "x64"  ]; then
-    # Add extra flag if OpenJCEPlus is to be bundled
-    if [[ $BUILD_ARGS == *"--bundle-openjceplus"* ]]; then
-      export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-openjceplus"
-    fi
+  # Add extra flag if OpenJCEPlus is to be bundled
+  if [[ $BUILD_ARGS == *"--bundle-openjceplus"* ]]; then
+    export CONFIGURE_ARGS_FOR_ANY_PLATFORM="${CONFIGURE_ARGS_FOR_ANY_PLATFORM} --enable-openjceplus"
   fi
 fi
 

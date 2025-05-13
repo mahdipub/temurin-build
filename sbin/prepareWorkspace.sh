@@ -377,20 +377,8 @@ updateOpenj9Sources() {
     GSKIT_CREDENTIALS=""
     
     if [ "${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]}" == "true" ]; then
-      SUPPORTED_PLATFORM=false
-      if [ "$TARGET_OS" = "linux"  ]; then
-        if [ "$ARCHITECTURE" = "x64" ] || [ "$ARCHITECTURE" = "ppc64le" ] || [ "$ARCHITECTURE" = "s390x"  ] || [ "$ARCHITECTURE" = "aarch64"  ]; then
-          SUPPORTED_PLATFORM=true
-        fi
-      elif [ "$TARGET_OS" = "aix" ] || [ "$TARGET_OS" = "windows" ]|| [ "$TARGET_OS" = "mac" ]; then
-          SUPPORTED_PLATFORM=true
-      fi
-
-      if [ "$SUPPORTED_PLATFORM" == "true" ]; then
-        # Set the flags to get the OpenJCEPlus source code
-        OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}"
-      fi
-      
+      # Set the flags to get the OpenJCEPlus source code
+      OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}"
       
       # Set the flags to get the appropriate GSKit binaries
       GSKIT_FOLDER="https://na.artifactory.swg-devops.com/artifactory/sec-gskit-javasec-generic-local/gskit8"
@@ -422,10 +410,8 @@ updateOpenj9Sources() {
         fi
       fi
 
-      if [ "$SUPPORTED_PLATFORM" == "true" ]; then
-        GSKIT_FLAGS="-gskit-bin=${GSKIT_LOCATION}/${GSKIT_PLATFORM}/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_LOCATION}/${GSKIT_PLATFORM}/jgsk_crypto_sdk.tar"
-        GSKIT_CREDENTIALS="-gskit-credential=$GSKIT_USERNAME:$GSKIT_PASSWORD"
-      fi
+      GSKIT_FLAGS="-gskit-bin=${GSKIT_LOCATION}/${GSKIT_PLATFORM}/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_LOCATION}/${GSKIT_PLATFORM}/jgsk_crypto_sdk.tar"
+      GSKIT_CREDENTIALS="-gskit-credential=$GSKIT_USERNAME:$GSKIT_PASSWORD"
     fi
     
     # NOTE: fetched openssl will NOT be used in the RISC-V cross-compile situation
