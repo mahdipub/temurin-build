@@ -22,7 +22,7 @@ export ANT_HOME=/cygdrive/C/Projects/OpenJDK/apache-ant-1.10.1
 export DRAGONWELL8_BOOTSTRAP=/cygdrive/C/openjdk/dragonwell-bootstrap/jdk8u272-ga
 export ALLOW_DOWNLOADS=true
 export LANG=C
-export OPENJ9_NASM_VERSION=2.13.03
+export OPENJ9_NASM_VERSION=2.15.05
 
 TOOLCHAIN_VERSION=""
 
