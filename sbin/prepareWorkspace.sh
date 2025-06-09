@@ -382,7 +382,7 @@ updateOpenj9Sources() {
       
       # Set the flags to get the appropriate GSKit binaries
       GSKIT_FOLDER="https://na.artifactory.swg-devops.com/artifactory/sec-gskit-javasec-generic-local/gskit8"
-      GSKIT_VERSION="20240521_8.9.6"
+      GSKIT_VERSION="20250522_8.9.11"
       GSKIT_LOCATION="${GSKIT_FOLDER}/${GSKIT_VERSION}"
       GSKIT_PLATFORM=""
       if [ "$TARGET_OS" = "linux"  ]; then
