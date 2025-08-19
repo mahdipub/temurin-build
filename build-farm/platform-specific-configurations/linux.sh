@@ -321,18 +321,18 @@ else
     # Enable GCC 10 for RISC-V, given the rapid evolution of RISC-V, the newer the GCC toolchain, the better
     [ -r /usr/bin/gcc-10 ] && export  CC=/usr/bin/gcc-10
     [ -r /usr/bin/g++-10 ] && export CXX=/usr/bin/g++-10
-  elif [ "$JAVA_FEATURE_VERSION" -ge 19 ] && [ -r /usr/local/gcc11/bin/gcc-11.2 ] && [ "${ARCHITECTURE}" != "aarch64" ] || [ "${VARIANT}" != "${BUILD_VARIANT_OPENJ9}" ] ; then
-    # For OpenJ9 Java 19 or later, use gcc 11.2 except on aarch64 Linux, due to https://github.com/eclipse-openj9/openj9/issues/15390
+  elif [ -r /usr/local/gcc11/bin/gcc-11.2 ] && [ "$JAVA_FEATURE_VERSION" -eq 24 ] && [ "${ARCHITECTURE}" != "aarch64" ] && [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ] ; then
+    # For JDK24, use 11.2
     export PATH=/usr/local/gcc11/bin:$PATH
     [ -r /usr/local/gcc11/bin/gcc-11.2 ] && export  CC=/usr/local/gcc11/bin/gcc-11.2
     [ -r /usr/local/gcc11/bin/g++-11.2 ] && export CXX=/usr/local/gcc11/bin/g++-11.2
     export LD_LIBRARY_PATH=/usr/local/gcc11/lib64:/usr/local/gcc11/lib
-  elif [ -r /usr/local/gcc11/bin/gcc-11.2 ] && [ "${ARCHITECTURE}" != "aarch64" ] && [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ] ; then
-    # For OpenJ9 use gcc 11.2 except on aarch64 Linux, due to https://github.com/eclipse-openj9/openj9/issues/15390
-    export PATH=/usr/local/gcc11/bin:$PATH
-    [ -r /usr/local/gcc11/bin/gcc-11.2 ] && export  CC=/usr/local/gcc11/bin/gcc-11.2
-    [ -r /usr/local/gcc11/bin/g++-11.2 ] && export CXX=/usr/local/gcc11/bin/g++-11.2
-    export LD_LIBRARY_PATH=/usr/local/gcc11/lib64:/usr/local/gcc11/lib
+  elif [ -r /usr/local/gcc13/bin/gcc-13.2 ] && [ "${ARCHITECTURE}" != "aarch64" ] && [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ] ; then
+    # For OpenJ9 use gcc 13.2 except on aarch64 Linux, due to https://github.com/eclipse-openj9/openj9/issues/15390
+    export PATH=/usr/local/gcc13/bin:$PATH
+    [ -r /usr/local/gcc13/bin/gcc-13.2 ] && export  CC=/usr/local/gcc13/bin/gcc-13.2
+    [ -r /usr/local/gcc13/bin/g++-13.2 ] && export CXX=/usr/local/gcc13/bin/g++-13.2
+    export LD_LIBRARY_PATH=/usr/local/gcc13/lib64:/usr/local/gcc13/lib
   elif [ -r /usr/local/gcc10/bin/gcc-10.3 ] && [ "${VARIANT}" == "${BUILD_VARIANT_OPENJ9}" ] ; then
     # For OpenJ9 use gcc 10.3 on aarch64 Linux
     export PATH=/usr/local/gcc10/bin:$PATH
