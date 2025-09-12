@@ -382,7 +382,12 @@ updateOpenj9Sources() {
       
       # Set the flags to get the appropriate GSKit binaries
       GSKIT_FOLDER="https://na.artifactory.swg-devops.com/artifactory/sec-gskit-javasec-generic-local/gskit8"
-      GSKIT_VERSION="20250522_8.9.11"
+      GSKIT_VERSION="20250823_8.9.14"
+      # An older version of GSKIT applies to the Java 25 GA release branch.
+      # TODO remove this in the future.
+      if [ "${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}" == "semeru-java-25" ]; then
+        GSKIT_VERSION="20250522_8.9.11"
+      fi
       GSKIT_LOCATION="${GSKIT_FOLDER}/${GSKIT_VERSION}"
       GSKIT_PLATFORM=""
       if [ "$TARGET_OS" = "linux"  ]; then
