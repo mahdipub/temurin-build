@@ -147,9 +147,10 @@ then
     # To support reproducible-builds the jar/jmod --date option is required
     # which is only available in jdk-17 and from jdk-19 so we cannot bootstrap with JDK16
     JDK_BOOT_VERSION="17"
-  elif [ "${JAVA_FEATURE_VERSION}" == "21" ] && [ "${ARCHITECTURE}" == "riscv64" ]; then
-    # JDK20 has issues. No RVV fix for C910/C920 systems and
-    # does not run well in in docker containers
+  elif [ "${JAVA_FEATURE_VERSION}" == "21" ]; then
+    # riscv64 JDK20 has issues. No RVV fix for C910/C920 systems and
+    # does not run well in in docker containers.
+    # Some platforms of jdk-20 are not available for download, use jdk-21.
     JDK_BOOT_VERSION="21"
   elif [ "${JAVA_FEATURE_VERSION}" == "19" ]; then
     JDK_BOOT_VERSION="19"
