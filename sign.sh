@@ -78,7 +78,7 @@ signRelease()
       else
         for f in $FILES
         do
-          echo "Signing ${f}"
+          echo "Processing file: ${f}"
           if [ "$SIGN_TOOL" = "eclipse" ]; then
             echo "Signing $f using Eclipse Foundation codesign service"
             dir=$(dirname "$f")
@@ -121,7 +121,13 @@ signRelease()
                   ucl sign-code --file "$f" -n ${SIGNING_CERTIFICATE} -t "${SERVER}" --hash SHA256
                 elif [ "$SIGN_TOOL" = "garasign" ]; then
                   garasign sign --type authenticode --key ${SIGNING_CERTIFICATE} --hashAlg SHA256 --inputFile "$f" --tsaUrl "${SERVER}" --append --overwrite
+                elif [ "$SIGN_TOOL" = "cosign" ]; then
+                  /usr/bin/java -jar /opt/Microsoft/jsign/jsign.jar \
+                    --keystore /opt/Garantir/bin/garasignconfig.txt \
+                    --tsa http://timestamp.digicert.com --storetype PKCS11 \
+                    --storepass ignored --alias ${SIGNING_CERTIFICATE} --alg sha-256 $f
                 else
+                  echo "Using sign tool path: $signToolPath"
                   "$signToolPath" sign /f "${SIGNING_CERTIFICATE}" /p "$SIGN_PASSWORD" /fd SHA256 /t "${SERVER}" "$f"
                 fi
                 RC=$?
@@ -205,7 +211,7 @@ if [ "${OPERATING_SYSTEM}" = "windows" ]; then
   mv "${signedArchive}" "${ARCHIVE}"
 fi
 
-if ([ "$OPERATING_SYSTEM" = "aix" ] || [ "$OPERATING_SYSTEM" = "linux" ] || [ "$OPERATING_SYSTEM" = "windows" ] || [ "$OPERATING_SYSTEM" = "mac" ] && [ "$SIGN_TOOL" = "ucl" ] || [ "$SIGN_TOOL" = "garasign" ]); then
+if ([ "$OPERATING_SYSTEM" = "aix" ] || [ "$OPERATING_SYSTEM" = "linux" ] || [ "$OPERATING_SYSTEM" = "windows" ] || [ "$OPERATING_SYSTEM" = "mac" ] && [ "$SIGN_TOOL" = "ucl" ] || [ "$SIGN_TOOL" = "garasign" ] || [ "$SIGN_TOOL" = "cosign" ]); then
   echo "Sign archive ${ARCHIVE}"
   # sign the tarball/zip
   if [ "$SIGN_TOOL" = "ucl" ]; then
@@ -213,6 +219,12 @@ if ([ "$OPERATING_SYSTEM" = "aix" ] || [ "$OPERATING_SYSTEM" = "linux" ] || [ "$
   elif [ "$SIGN_TOOL" = "garasign" ]; then
     garasign sign --type cosign --key ${SIGNING_CERTIFICATE} --inputFile "${ARCHIVE}" --outputDirectory "workspace/target/" --overwrite --additionalFlags --b64=false
     mv "${ARCHIVE}".cosign.sig "${ARCHIVE}".sig
+  elif [ "$SIGN_TOOL" = "cosign" ]; then
+    GRS_PKCS11_DISABLE_EC=0 cosign sign-blob \
+      --key "pkcs11:slot-id=1;object=PRD0000192key?module-path=/usr/local/lib/Garantir/GRS/libgrsp11.so" \
+      --output-signature ${ARCHIVE}.sig \
+      --b64=false \
+      ${ARCHIVE}
   fi
 else
   echo "Skipping code signing of archive ${ARCHIVE} as ${SIGN_TOOL} is unsupported on ${OPERATING_SYSTEM}"
