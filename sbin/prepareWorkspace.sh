@@ -375,11 +375,11 @@ updateOpenj9Sources() {
     OPENJCEPLUS_FLAGS=""
     GSKIT_FLAGS=""
     GSKIT_CREDENTIALS=""
-    
+
     if [ "${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]}" == "true" ]; then
       # Set the flags to get the OpenJCEPlus source code
       OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}"
-      
+
       # Set the flags to get the appropriate GSKit binaries
       GSKIT_FOLDER="https://na.artifactory.swg-devops.com/artifactory/sec-gskit-javasec-generic-local/gskit8"
       GSKIT_VERSION="20251128_8.9.18"
@@ -418,9 +418,9 @@ updateOpenj9Sources() {
       GSKIT_FLAGS="-gskit-bin=${GSKIT_LOCATION}/${GSKIT_PLATFORM}/jgsk_crypto.tar -gskit-sdk-bin=${GSKIT_LOCATION}/${GSKIT_PLATFORM}/jgsk_crypto_sdk.tar"
       GSKIT_CREDENTIALS="-gskit-credential=$GSKIT_USERNAME:$GSKIT_PASSWORD"
     fi
-    
+
     # NOTE: fetched openssl will NOT be used in the RISC-V cross-compile situation
-    bash get_source.sh -openssl-branch=openssl-3.5.4 ${OPENJCEPLUS_FLAGS} ${GSKIT_FLAGS} ${GSKIT_CREDENTIALS}
+    bash get_source.sh -openssl-branch=openssl-3.5.5 ${OPENJCEPLUS_FLAGS} ${GSKIT_FLAGS} ${GSKIT_CREDENTIALS}
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}"
   fi
 }
