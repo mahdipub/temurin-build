@@ -25,7 +25,12 @@ case "$OPERATING_SYSTEM" in
       EXTENSION="tar.gz"
       ;;
     "windows")
-      EXTENSION="zip"
+      if [[ "$FILTER" == *".zip"* ]]; then
+        EXTENSION="zip"
+      fi
+      if [[ "$FILTER" == *".msi"* ]]; then
+        EXTENSION="msi"
+      fi      
       ;;
     *)
       echo "OS does not need signing ${OPERATING_SYSTEM}"

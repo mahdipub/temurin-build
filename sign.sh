@@ -72,7 +72,7 @@ signRelease()
       # The ./bin/C directory contains FIPS binaries that are signed by other means.
       # Skip all files within this directory as signing them would cause failures when
       # the libraries attempt to self verify themselves.
-      FILES=$(find . -type f -name '*.exe' -o -name '*.dll' -not -path './bin/C/*')
+      FILES=$(find . -type f -name '*.exe' -o -name '*.dll' -o -name '*.msi' -not -path './bin/C/*')
       if [ "$FILES" == "" ]; then
         echo "No files to sign"
       else
@@ -171,9 +171,18 @@ function extractArchive {
   case "$OPERATING_SYSTEM" in
     "aix" | "linux" | "mac")
         gunzip -dc "${ARCHIVE}" | tar xf - -C "${TMP_DIR}"
+        # Set jdkDir to the top level directory from the tarball/zipball
+        # shellcheck disable=SC2012
+        jdkDir=$(ls -1 "${TMP_DIR}" | head -1 | xargs basename)
+
         ;;
     "windows")
-        unzip -q "${ARCHIVE}" -d "${TMP_DIR}"
+        if [[ "$FILTER" == *".zip"* ]]; then
+          unzip -q "${ARCHIVE}" -d "${TMP_DIR}"
+          # Set jdkDir to the top level directory from the tarball/zipball
+          # shellcheck disable=SC2012
+          jdkDir=$(ls -1 "${TMP_DIR}" | head -1 | xargs basename)
+        fi
         ;;
     *)
         echo "could not detect archive type"
@@ -190,14 +199,11 @@ fi
 configDefaults
 parseArguments "$@"
 
-if [ "${OPERATING_SYSTEM}" = "windows" ]; then
+if [[ "${OPERATING_SYSTEM}" == "windows" && "$FILTER" =~ \.(zip|msi)$ ]]; then
+  echo 'Mahdi'
   extractArchive
   # this is because the windows signing is performed by a Linux machine now. It needs this variable set to know to create a zipfile instead of a tarball
   BUILD_CONFIG[OS_KERNEL_NAME]="cygwin"
-
-  # Set jdkDir to the top level directory from the tarball/zipball
-  # shellcheck disable=SC2012
-  jdkDir=$(ls -1 "${TMP_DIR}" | head -1 | xargs basename)
 
   cd "${TMP_DIR}/${jdkDir}" || exit 1
   signRelease
