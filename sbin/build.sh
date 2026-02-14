@@ -2076,10 +2076,16 @@ createArchive() {
 
   echo "Your archive was created as ${archive}"
 
-  echo "Moving the artifact to location ${archiveTarget}"
-  mv "${archive}" "${archiveTarget}"  # moving compressed file into a folder
+  # Search for '_openj9' and replace with '.1_openj9'
+  updated_path=$(echo "$archiveTarget" | sed 's/_openj9/.1_openj9/')
 
-  if [ -f "$archiveTarget" ] && [ -s "$archiveTarget" ] ; then
+  echo "############## New name for .1 release ($updated_path) ############# "
+
+
+  echo "Moving the artifact to location ${updated_path}"
+  mv "${archive}" "${updated_path}"  # moving compressed file into a folder
+
+  if [ -f "$updated_path" ] && [ -s "$updated_path" ] ; then
     echo "archive done."
   else
     echo "[ERROR] ${targetName} failed to be archived"
