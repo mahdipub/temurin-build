@@ -383,10 +383,9 @@ updateOpenj9Sources() {
       # Set the flags to get the appropriate GSKit binaries
       GSKIT_FOLDER="https://na.artifactory.swg-devops.com/artifactory/sec-gskit-javasec-generic-local/gskit8"
       GSKIT_VERSION="20251128_8.9.18"
-      # An older version of GSKIT applies to the Java 25 GA release branch.
-      # TODO remove this in the future.
-      if [ "${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}" == "semeru-java-25" ]; then
-        GSKIT_VERSION="20250522_8.9.11"
+      # Linux on s390x makes use of a different technical preview version of GSKIT.
+      if [ "$TARGET_OS" = "linux" ] && [ "$ARCHITECTURE" = "s390x" ]; then
+        GSKIT_VERSION="20260219_8.9.21"
       fi
       GSKIT_LOCATION="${GSKIT_FOLDER}/${GSKIT_VERSION}"
       GSKIT_PLATFORM=""
