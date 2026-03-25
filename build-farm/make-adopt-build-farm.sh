@@ -137,7 +137,10 @@ then
   echo "Detecting boot jdk for: ${JAVA_TO_BUILD}"
   echo "Found build version: ${JAVA_FEATURE_VERSION}"
   JDK_BOOT_VERSION=$(( JAVA_FEATURE_VERSION - 1 ))
-  if [ "${JAVA_FEATURE_VERSION}" == "11" ] && [ "${VARIANT}" == "openj9" ]; then
+  if [ "${JAVA_FEATURE_VERSION}" == "8" ] && [ "${VARIANT}" == "openj9" ]; then
+    # Boot OpenJ9 jdk8 with jdk8 so we can download the boot jdk
+    JDK_BOOT_VERSION="8"
+  elif [ "${JAVA_FEATURE_VERSION}" == "11" ] && [ "${VARIANT}" == "openj9" ]; then
     # OpenJ9 only supports building jdk-11 with jdk-11
     JDK_BOOT_VERSION="11"
   elif [ "${JAVA_FEATURE_VERSION}" == "11" ] && [ "${ARCHITECTURE}" == "riscv64" ]; then
