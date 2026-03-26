@@ -137,7 +137,7 @@ then
   echo "Detecting boot jdk for: ${JAVA_TO_BUILD}"
   echo "Found build version: ${JAVA_FEATURE_VERSION}"
   JDK_BOOT_VERSION=$(( JAVA_FEATURE_VERSION - 1 ))
-  if [ "${JAVA_FEATURE_VERSION}" == "8" ] && [ "${VARIANT}" == "openj9" ] && [ "${TARGET_OS}" != "AIX" ]; then
+  if [ "${JAVA_FEATURE_VERSION}" == "8" ] && [ "${VARIANT}" == "openj9" ] && [ "${OPERATING_SYSTEM}" != "aix" ]; then
     # Boot OpenJ9 jdk8 with jdk8 so we can download the boot jdk
     # except on AIX since it finds IBM Java 8 in /usr/java8_64 where keytool doesn't work to convert certificates
     JDK_BOOT_VERSION="8"
