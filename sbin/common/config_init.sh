@@ -29,6 +29,7 @@
 # (because of GPL3), we therefore have to name the indexes of the CONFIG_PARAMS
 # map. This is why we can't have nice things.
 CONFIG_PARAMS=(
+ADDITIONAL_FILE_NAME_TAG
 ADOPTIUM_DEVKIT_LOCATION
 ADOPT_PATCHES
 ALSA
@@ -643,6 +644,8 @@ function configDefaults() {
   # By default do not bundle OpenJCEPlus
   BUILD_CONFIG[BUNDLE_OPENJCEPLUS]=${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]:-false}
   BUILD_CONFIG[OPENJCEPLUS_BRANCH]="main"
+
+  BUILD_CONFIG[ADDITIONAL_FILE_NAME_TAG]=${BUILD_CONFIG[ADDITIONAL_FILE_NAME_TAG]:-""}
 }
 
 # Declare the map of build configuration that we're going to use
