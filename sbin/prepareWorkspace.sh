@@ -378,7 +378,11 @@ updateOpenj9Sources() {
 
     if [ "${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]}" == "true" ]; then
       # Set the flags to get the OpenJCEPlus source code
-      OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}"
+      if [ "${BUILD_CONFIG[ADDITIONAL_FILE_NAME_TAG]}" == "IBM" ]; then
+        OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.ibm.com/runtimes/OpenJCEPlus.git -openjceplus-branch=${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}"
+      else
+        OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}"
+      fi
 
       # Set the flags to get the appropriate GSKit binaries
       GSKIT_FOLDER="https://na.artifactory.swg-devops.com/artifactory/sec-gskit-javasec-generic-local/gskit8"
