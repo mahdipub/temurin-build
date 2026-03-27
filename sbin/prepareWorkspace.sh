@@ -378,7 +378,7 @@ updateOpenj9Sources() {
 
     if [ "${BUILD_CONFIG[BUNDLE_OPENJCEPLUS]}" == "true" ]; then
       # Set the flags to get the OpenJCEPlus source code
-      if [ "${BUILD_CONFIG[ADDITIONAL_FILE_NAME_TAG]}" == "IBM" ]; then
+      if [[ "${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}" == ibm-* ]]; then
         OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.ibm.com/runtimes/OpenJCEPlus.git -openjceplus-branch=${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}"
       else
         OPENJCEPLUS_FLAGS="-openjceplus-repo=https://github.com/ibmruntimes/OpenJCEPlus.git -openjceplus-branch=${BUILD_CONFIG[OPENJCEPLUS_BRANCH]}"
