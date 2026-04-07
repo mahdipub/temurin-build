@@ -423,7 +423,7 @@ updateOpenj9Sources() {
     fi
 
     # NOTE: fetched openssl will NOT be used in the RISC-V cross-compile situation
-    bash get_source.sh -openssl-branch=openssl-3.5 ${OPENJCEPLUS_FLAGS} ${GSKIT_FLAGS} ${GSKIT_CREDENTIALS}
+    bash get_source.sh -openssl-branch=openssl-3.5.6 ${OPENJCEPLUS_FLAGS} ${GSKIT_FLAGS} ${GSKIT_CREDENTIALS}
     cd "${BUILD_CONFIG[WORKSPACE_DIR]}"
   fi
 }
