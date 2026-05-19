@@ -386,11 +386,7 @@ updateOpenj9Sources() {
 
       # Set the flags to get the appropriate GSKit binaries
       GSKIT_FOLDER="https://na.artifactory.swg-devops.com/artifactory/sec-gskit-javasec-generic-local/gskit8"
-      GSKIT_VERSION="20251128_8.9.18"
-      # Linux on s390x makes use of a different technical preview version of GSKIT.
-      if [ "$TARGET_OS" = "linux" ] && [ "$ARCHITECTURE" = "s390x" ]; then
-        GSKIT_VERSION="20260219_8.9.21"
-      fi
+      GSKIT_VERSION="20251128_8.9.22"
       GSKIT_LOCATION="${GSKIT_FOLDER}/${GSKIT_VERSION}"
       GSKIT_PLATFORM=""
       if [ "$TARGET_OS" = "linux"  ]; then
