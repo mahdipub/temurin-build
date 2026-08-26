@@ -326,6 +326,15 @@ configureVersionStringParameter() {
     BUILD_CONFIG[VENDOR_URL]="https://www.ibm.com/semeru-runtimes"
     BUILD_CONFIG[VENDOR_BUG_URL]="https://github.com/ibmruntimes/Semeru-Runtimes/issues"
     BUILD_CONFIG[VENDOR_VM_BUG_URL]="https://github.com/eclipse-openj9/openj9/issues"
+    # For non-JDK8 Semeru builds: derive VENDOR_VERSION from the --with-vendor-version-string
+    # passed in USER_SUPPLIED_CONFIGURE_ARGS (e.g. "11.0.32.10"). This is the IBM CPU version
+    # and is used in getJdkArchivePath() to produce the correct extracted directory name
+    # (e.g. jdk-11.0.32.10 instead of jdk-11.0.32.1+1 for .10 CPU releases).
+    # JDK8 gets VENDOR_VERSION set earlier via --vendor-version in BUILD_ARGS.
+    if [[ "${BUILD_CONFIG[OPENJDK_FEATURE_NUMBER]}" != "8" ]] \
+      && [[ "${BUILD_CONFIG[USER_SUPPLIED_CONFIGURE_ARGS]}" =~ --with-vendor-version-string=[^0-9]*([0-9][0-9.]+) ]]; then
+      BUILD_CONFIG[VENDOR_VERSION]="${BASH_REMATCH[1]}"
+    fi
   elif [[ "${BUILD_CONFIG[BUILD_VARIANT]}" == "${BUILD_VARIANT_BISHENG}" ]]; then
     BUILD_CONFIG[VENDOR]="Huawei"
     BUILD_CONFIG[VENDOR_VERSION]="Bisheng"
@@ -1430,6 +1439,15 @@ getJdkArchivePath() {
   # echo "jdk-${version}"
 
   local version=$(getOpenJdkVersion)
+
+  # For Semeru/OpenJ9 builds: use the IBM vendor version (IMPLEMENTOR_VERSION) as the
+  # archive directory name so the extracted directory matches the IBM version scheme.
+  # e.g. jdk-11.0.32.10 (non-JDK8) or jdk-8.0.504.0 (JDK8) instead of the upstream tag.
+  if [[ "${BUILD_CONFIG[BUILD_VARIANT]}" == "${BUILD_VARIANT_OPENJ9}" ]] \
+    && [[ -n "${BUILD_CONFIG[VENDOR_VERSION]}" ]]; then
+    version="jdk-${BUILD_CONFIG[VENDOR_VERSION]}"
+  fi
+
   echo "$version"
 }
 
